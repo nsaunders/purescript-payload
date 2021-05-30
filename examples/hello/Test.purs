@@ -2,15 +2,16 @@ module Payload.Examples.Hello.Test where
 
 import Prelude
 
+import Control.Monad.Reader (runReaderT)
 import Payload.Examples.Hello.Main (handlers, spec)
-import Payload.Test.Helpers (respMatches, withRoutes)
+import Payload.Test.Helpers (respMatches, withServer')
 import Payload.Test.Helpers as Helpers
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
 
 tests :: TestSuite
 tests = do
-  let withApi = withRoutes spec handlers
+  let withApi = withServer' (flip runReaderT "env") spec { handlers, guards: {} }
   suite "Hello world" do
     let { get } = Helpers.request "http://localhost:3000"
     test "GET /user/12/messages?limit=2 succeeds" $ withApi do
