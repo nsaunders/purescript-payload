@@ -2,16 +2,15 @@ module Payload.Examples.Transformer.Main where
 
 import Prelude
 
-import Control.Monad.Reader.Trans (ReaderT(..), ask, asks, runReaderT)
+import Control.Monad.Reader.Trans (ReaderT, ask, asks, runReaderT)
 import Data.Either (Either, note)
 import Data.Foldable (find)
 import Effect (Effect)
 import Effect.Aff (Aff, launchAff_)
 import Effect.Aff.Class (liftAff)
 import Node.HTTP as HTTP
-import Payload.Headers (Headers)
 import Payload.Headers as Headers
-import Payload.ResponseTypes (Response(..))
+import Payload.ResponseTypes (Response)
 import Payload.Server as Payload
 import Payload.Server.Guards as Guards
 import Payload.Server.Response as Resp
