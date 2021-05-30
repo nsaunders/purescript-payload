@@ -15,8 +15,6 @@ import Data.Bifunctor (lmap)
 import Data.Either (Either(..))
 import Data.List (List, (:))
 import Data.Symbol (class IsSymbol, reflectSymbol)
-import Effect.Aff (Aff)
-import Effect.Aff as Aff
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Console (errorShow)
 import Effect.Exception (Error)
