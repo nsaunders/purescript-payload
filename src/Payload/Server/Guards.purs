@@ -86,7 +86,7 @@ class RunGuards
   (results :: Row Type)
   (routeGuardSpec :: Row Type)
   m | guardNames guardsSpec allGuards -> routeGuardSpec where
-     runGuards :: Guards guardNames
+   runGuards :: Guards guardNames
                -> GuardTypes (Record guardsSpec)
                -> Record allGuards
                -> Record results

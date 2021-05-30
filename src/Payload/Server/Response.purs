@@ -84,10 +84,10 @@ import Data.Maybe (Maybe(..))
 import Data.Newtype (over)
 import Effect.Aff.Class (class MonadAff)
 import Node.Stream as Stream
-import Payload.ContentType as ContentType
 import Payload.Headers (Headers)
 import Payload.Headers as Headers
 import Payload.ResponseTypes (Empty, Failure(..), HttpStatus, Json(..), RawResponse, Response(..), ResponseBody(..), Result)
+import Payload.ContentType as ContentType
 import Payload.Server.Status as Status
 import Payload.TypeErrors (type (<>), type (|>))
 import Prim.TypeError (class Fail, Quote, Text)

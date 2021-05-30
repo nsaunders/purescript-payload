@@ -179,7 +179,15 @@ mkLogger logLevel = { log: log_, logDebug, logError }
     logError | logLevel >= LogError = log
     logError = const $ pure unit
 
-handleRequest :: forall m. MonadEffect m => (m ~> Aff) -> Config -> Trie (HandlerEntry m) -> HTTP.Request -> HTTP.Response -> Effect Unit
+handleRequest
+  :: forall m
+   . MonadEffect m
+  => (m ~> Aff)
+  -> Config
+  -> Trie (HandlerEntry m)
+  -> HTTP.Request
+  -> HTTP.Response
+  -> Effect Unit
 handleRequest runM cfg@{ logger } routerTrie req res = do
   let url = Url.parse (HTTP.requestURL req)
   logger.logDebug (HTTP.requestMethod req <> " " <> show (url.path))
@@ -188,8 +196,16 @@ handleRequest runM cfg@{ logger } routerTrie req res = do
     Left err -> do
       writeResponse res (internalError $ StringBody $ "Path could not be decoded: " <> show err)
 
-runHandlers :: forall m. MonadEffect m => (m ~> Aff) -> Config -> Trie (HandlerEntry m) -> RequestUrl
-               -> HTTP.Request -> HTTP.Response -> Effect Unit
+runHandlers
+  :: forall m
+   . MonadEffect m
+  => (m ~> Aff)
+  -> Config
+  -> Trie (HandlerEntry m)
+  -> RequestUrl
+  -> HTTP.Request
+  -> HTTP.Response
+  -> Effect Unit
 runHandlers runM { logger } routerTrie reqUrl req res = do
   let (matches :: List (HandlerEntry m)) = Trie.lookup (reqUrl.method : reqUrl.path) routerTrie
   let matchesStr = String.joinWith "\n" (Array.fromFoldable $ (showRouteUrl <<< _.route) <$> matches)
