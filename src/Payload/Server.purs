@@ -1,19 +1,10 @@
-{-
 module Payload.Server
        ( launch
        , start
        , start_
        , startGuarded
        , startGuarded_
-       , Options
-       , defaultOpts
-       , LogLevel(..)
-       , Server
-       , close
-       ) where
--}
-module Payload.Server
-       ( startGuarded'
+       , startGuarded'
        , Options
        , defaultOpts
        , LogLevel(..)
@@ -95,11 +86,10 @@ type Logger =
   , logError :: String -> Effect Unit
   }
 
-{-
 -- | Start server with default options, ignoring unexpected startup errors.
 launch
   :: forall routesSpec handlers
-   . Routable routesSpec {} handlers {}
+   . Routable routesSpec {} handlers {} Aff
   => Spec routesSpec
   -> handlers
   -> Effect Unit
@@ -108,7 +98,7 @@ launch routeSpec handlers = Aff.launchAff_ (start_ routeSpec handlers)
 -- | Start server with default options and given route spec and handlers (no guards).
 start_
   :: forall routesSpec handlers
-   . Routable routesSpec {} handlers {}
+   . Routable routesSpec {} handlers {} Aff
   => Spec routesSpec
   -> handlers
   -> Aff (Either String Server)
@@ -117,7 +107,7 @@ start_ = start defaultOpts
 -- | Start server with given routes and handlers (no guards).
 start
   :: forall routesSpec handlers
-   . Routable routesSpec {} handlers {}
+   . Routable routesSpec {} handlers {} Aff
   => Options
   -> Spec routesSpec
   -> handlers
@@ -129,14 +119,23 @@ start opts routeSpec handlers = startGuarded opts api { handlers, guards: {} }
 -- | Start server with default options and given spec, handlers, and guards.
 startGuarded_
   :: forall routesSpec guardsSpec handlers guards
-   . Routable routesSpec guardsSpec handlers guards
+   . Routable routesSpec guardsSpec handlers guards Aff
   => Spec { routes :: routesSpec, guards :: guardsSpec }
   -> { handlers :: handlers, guards :: guards }
   -> Aff (Either String Server)
 startGuarded_ = startGuarded defaultOpts
--}
 
 -- | Start server with given spec, handlers, and guards.
+startGuarded
+  :: forall routesSpec guardsSpec handlers guards
+   . Routable routesSpec guardsSpec handlers guards Aff
+  => Options
+  -> Spec { guards :: guardsSpec, routes :: routesSpec }
+  -> { handlers :: handlers, guards :: guards }
+  -> Aff (Either String Server)
+startGuarded = startGuarded' identity
+
+-- | Start server with given monad transformation, spec, handlers, and guards.
 startGuarded'
   :: forall routesSpec guardsSpec handlers guards m
    . MonadEffect m
